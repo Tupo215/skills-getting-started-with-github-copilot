@@ -1,3 +1,13 @@
+:root {
+  --bg: #f7fafc;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+  --border: #e6e9ee;
+  --avatar-bg: #eef2ff;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,13 +16,11 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f5f5f5;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 0;
+  padding: 24px;
+  background: linear-gradient(180deg, var(--bg), #ffffff);
+  color: #111827;
 }
 
 header {
@@ -141,4 +149,111 @@ footer {
   margin-top: 30px;
   padding: 20px;
   color: #666;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(16, 24, 40, 0.09);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.activity-title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--accent-2);
+}
+.meta {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Description */
+.description {
+  margin: 8px 0 12px;
+  color: #374151;
+  font-size: 14px;
+}
+
+/* Participants section */
+.participants-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #111827;
+}
+.participants-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.participants-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(250, 250, 252, 0.6));
+  border: 1px solid rgba(15, 23, 42, 0.03);
+}
+
+/* Avatar like initials */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--avatar-bg);
+  color: var(--accent-2);
+  font-weight: 600;
+  font-size: 13px;
+  flex: 0 0 36px;
+}
+
+/* email text */
+.email {
+  font-size: 13px;
+  color: #111827;
+}
+
+/* Footer */
+.site-footer {
+  max-width: 1100px;
+  margin: 18px auto 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 420px) {
+  body {
+    padding: 12px;
+  }
+  .card {
+    padding: 12px;
+  }
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
 }

@@ -1,2 +1,4 @@
 fastapi
+testclient
+pytest
 uvicorn

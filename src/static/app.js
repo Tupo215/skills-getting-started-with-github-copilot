@@ -56,8 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement('article');
       card.className = 'card';
 
+
       const participantsHtml = (info.participants || []).map(p =>
-        `<li><span class="avatar">${initials(p)}</span><span class="email">${escapeHtml(p)}</span></li>`
+        `<li data-email="${escapeHtml(p)}"><span class="avatar">${initials(p)}</span><span class="email">${escapeHtml(p)}</span><button class="delete-participant" title="Remove participant" aria-label="Remove participant">🗑️</button></li>`
       ).join('');
 
       card.innerHTML = `
@@ -78,6 +79,38 @@ document.addEventListener("DOMContentLoaded", () => {
           </ul>
         </section>
       `;
+
+      // Add event listeners for delete buttons
+      setTimeout(() => {
+        card.querySelectorAll('.delete-participant').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const li = btn.closest('li');
+            const email = li.getAttribute('data-email');
+            if (!email) return;
+            btn.disabled = true;
+            btn.textContent = '...';
+            try {
+              const resp = await fetch(`/activities/${encodeURIComponent(name)}/unregister`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+              });
+              if (resp.ok) {
+                li.remove();
+              } else {
+                const result = await resp.json();
+                alert(result.detail || 'Failed to remove participant');
+                btn.disabled = false;
+                btn.textContent = '🗑️';
+              }
+            } catch (err) {
+              alert('Network error');
+              btn.disabled = false;
+              btn.textContent = '🗑️';
+            }
+          });
+        });
+      }, 0);
       container.appendChild(card);
     }
   }
@@ -116,10 +149,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = await response.json();
 
+
       if (response.ok) {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        // Refresh activities list so new participant appears
+        if (typeof loadActivities === 'function') {
+          loadActivities();
+        }
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";

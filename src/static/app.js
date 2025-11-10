@@ -41,6 +41,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Fetch activities and render activity cards with a participants section
+  async function loadActivities() {
+    const resp = await fetch('/activities');
+    const container = document.getElementById('activities');
+    if (!resp.ok) {
+      container.textContent = 'Failed to load activities.';
+      return;
+    }
+    const activities = await resp.json();
+    container.innerHTML = '';
+
+    for (const [name, info] of Object.entries(activities)) {
+      const card = document.createElement('article');
+      card.className = 'card';
+
+      const participantsHtml = (info.participants || []).map(p =>
+        `<li><span class="avatar">${initials(p)}</span><span class="email">${escapeHtml(p)}</span></li>`
+      ).join('');
+
+      card.innerHTML = `
+        <header class="card-header">
+          <h2 class="activity-title">${escapeHtml(name)}</h2>
+          <div class="meta">
+            <span class="schedule">${escapeHtml(info.schedule || '')}</span>
+            <span class="capacity">Max: ${escapeHtml(String(info.max_participants || ''))}</span>
+          </div>
+        </header>
+
+        <p class="description">${escapeHtml(info.description || '')}</p>
+
+        <section class="participants-section">
+          <h3>Participants (${(info.participants || []).length})</h3>
+          <ul class="participants-list">
+            ${participantsHtml || '<li class="info">No participants yet</li>'}
+          </ul>
+        </section>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  function initials(email) {
+    if (!email) return '?';
+    const name = email.split('@')[0].replace(/[._]/g, ' ').trim();
+    const parts = name.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0] ? parts[0][0] : '?').toUpperCase();
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
     event.preventDefault();
